@@ -5,7 +5,8 @@ import json
 import os
 import time
 
-topic = os.environ.get('PCDEMO_CHANNEL') or 'stats'
+# topic = os.environ.get('PCDEMO_CHANNEL') or 'stats'
+topic = 'stats'
 
 
 class ConnectionException(Exception):
@@ -25,15 +26,15 @@ class Reader:
                                               auto_offset_reset='earliest',
                                               group_id=None)
             except NoBrokersAvailable as err:
-                self.logger.error("Unable to find a broker: {0}".format(err))
+                self.logger.error(f"Unable to find a broker: {err}")
                 time.sleep(1)
 
-        self.logger.debug("We have a consumer {0}".format(time.time()))
+        self.logger.debug(f"We have a consumer {time.time()}")
         self.consumer.subscribe(topic)
         # Wait for the topic creation and seek back to the beginning
         self.consumer.poll(timeout_ms=10000)
         self.consumer.seek(TopicPartition(topic, 0), 0)
-        self.logger.debug("ok {0}".format(time.time()))
+        self.logger.debug(f"ok {time.time()}")
 
     def next(self):
         """
@@ -42,7 +43,7 @@ class Reader:
         the event payload is json.
         :return: The event in json form
         """
-        self.logger.debug("Reading stream: {0}".format(topic))
+        self.logger.debug(f"Reading stream: {topic}")
         try:
             if self.consumer:
                 self.logger.debug("A consumer is calling 'next'")
@@ -54,8 +55,7 @@ class Reader:
                     event_list = list(event_partitions.values())
                     payload = event_list[0][0]
                     event = payload.value
-                    self.logger.debug('Read an event from the stream {}'.
-                                      format(event))
+                    self.logger.debug(f'Read an event from the stream {event}')
                     try:
                         return json.loads(event)
                     except json.decoder.JSONDecodeError:

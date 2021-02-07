@@ -1,4 +1,4 @@
-FROM alpine
+FROM python:3-alpine
 MAINTAINER Peter Cornelius <peter@grabango.com>
 # Based on https://github.com/jazzdd86/alpine-flask
 
@@ -14,7 +14,6 @@ WORKDIR ${APP_DIR}
 # Install requirements early so we can change code and re-build quickly
 COPY requirements.txt .
 RUN pip3 install --upgrade pip && \
-    pip3 install flask && \
     pip3 install -r requirements.txt
 
 # expose http port
@@ -23,5 +22,6 @@ EXPOSE 80
 # copy config files into filesystem
 COPY src .
 
-# exectute start up script
+# execute start up script
+# I need a bash file to initialize the db (postgres?)
 ENTRYPOINT ["python3", "app.py"]

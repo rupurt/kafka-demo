@@ -6,20 +6,18 @@ import time
 import logging
 import requests
 
-#ideas: make a transform method that parses the response into a standardized format to be pushed to the topic
+# ideas: make a transform method that parses the response into a standardized format to be pushed to the topic
 # for both endpoints I need to first get the coin id's from the tickers (both have a list of coins)
 # write some tests that mock the API's response
 # polling the API's is the only possibility, since no ws or webhooks
 # topic = os.environ.get('PCDEMO_CHANNEL') or 'stats'
 topic = 'stats'
-
-
 coin_id = "btc-bitcoin"
 coinpaprika_url = f"https://api.coinpaprika.com/v1/coins/{coin_id}/ohlcv/today"
 
 base = "ethereum,bitcoin,chainlink"
 vs = "usd"
-coingecko_url = "https://api.coingecko.com/api/v3/simple/price" #?ids=ethereum&vs_currencies=usd"
+coingecko_url = "https://api.coingecko.com/api/v3/simple/price"  # ?ids=ethereum&vs_currencies=usd"
 
 
 class Publisher:
@@ -64,4 +62,3 @@ class Publisher:
 
     def transform(self):
         pass
-

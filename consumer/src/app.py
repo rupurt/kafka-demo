@@ -1,4 +1,4 @@
-# from flask import Flask, request
+from kafka import KafkaConsumer, TopicPartition
 from event_reader import Reader, ConnectionException
 import logging
 import json
@@ -34,6 +34,21 @@ if len(logger.handlers) == 0:
 
 
 if __name__ == '__main__':
-    logging.info("Reading")
-    reader.next()
+    # topic = 'stats'
+    # logging.info("Reading")
+    # consumer = KafkaConsumer(
+    #                          bootstrap_servers="kafka:9092",
+    #                          consumer_timeout_ms=1000,
+    #                          auto_offset_reset='earliest',
+    #                          group_id='test_consumer_group',
+    #                          value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+    #
+    # consumer.subscribe(topic)
+    # consumer.poll(timeout_ms=30000)
+    # consumer.seek(TopicPartition(topic, 0), 0)
+
+    # for message in consumer:
+    #     print(message)
+    while True:
+        reader.next()
     # app.run(host='0.0.0.0', port=80, debug=True)

@@ -3,6 +3,7 @@ from event_publisher import Publisher
 import logging
 import json
 
+
 dispatcher = Publisher()
 
 logger = logging.getLogger()

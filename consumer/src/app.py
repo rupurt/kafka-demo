@@ -4,12 +4,11 @@ import logging
 import json
 
 # app = Flask(__name__)
-reader = Reader()
 
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-if len(logger.handlers) == 0:
-    logger.addHandler(logging.StreamHandler())
+# logger = logging.getLogger()
+# logger.setLevel(logging.DEBUG)
+# if len(logger.handlers) == 0:
+#     logger.addHandler(logging.StreamHandler())
 
 
 # @app.route("/")
@@ -34,6 +33,8 @@ if len(logger.handlers) == 0:
 
 
 if __name__ == '__main__':
+    reader = Reader()
+    print("YOOOOOOOOOOOOO")
     # topic = 'stats'
     # logging.info("Reading")
     # consumer = KafkaConsumer(
@@ -50,5 +51,6 @@ if __name__ == '__main__':
     # for message in consumer:
     #     print(message)
     while True:
+        # print("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO CRISTEL")
         reader.next()
     # app.run(host='0.0.0.0', port=80, debug=True)

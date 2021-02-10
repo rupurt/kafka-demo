@@ -17,13 +17,13 @@ class Reader:
 
     def __init__(self):
         self.logger = logging.getLogger()
-        self.logger.info("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO Initializing the consumer")
+        self.logger.debug("Initializing the consumer")
         self.topic = 'stats'
         while not hasattr(self, 'consumer'):
             self.logger.debug("Getting the kafka consumer")
             try:
                 self.consumer = KafkaConsumer(bootstrap_servers="kafka:9092",
-                                              consumer_timeout_ms=100,
+                                              consumer_timeout_ms=10,
                                               auto_offset_reset='earliest',
                                               group_id='test_consumer_group',
                                               value_deserializer=lambda x: json.loads(x.decode('utf-8')))
@@ -31,7 +31,7 @@ class Reader:
                 self.logger.error(f"Unable to find a broker: {err}")
                 time.sleep(1)
 
-        self.logger.info(f"YOOOOOOOOOOOOOOOOOOOOOOOOOOO We have a consumer {time.time()}")
+        self.logger.debug(f"We have a consumer {time.time()}")
         self.consumer.subscribe(self.topic)
         # Wait for the topic creation and seek back to the beginning
         self.consumer.poll(timeout_ms=10000)
@@ -50,11 +50,11 @@ class Reader:
         """
         # self.logger.debug(f"Reading stream: {self.topic}")
 
-        # if self.consumer:
-        for message in self.consumer:
-            #if message is None or not message.value:
-            #    continue
-            print(f"YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO   {message.value}")
+        if self.consumer:
+            for message in self.consumer:
+                #if message is None or not message.value:
+                #    continue
+                self.logger.debug(message.value)
 
     # try:
     #     if self.consumer:

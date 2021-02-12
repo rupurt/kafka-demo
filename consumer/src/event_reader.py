@@ -4,6 +4,7 @@ import logging
 import json
 import os
 import time
+import psycopg2 as pg
 
 
 # topic = os.environ.get('PCDEMO_CHANNEL') or 'stats'
@@ -16,6 +17,9 @@ class ConnectionException(Exception):
 class Reader:
 
     def __init__(self):
+        conn_string = "dbname='kafka_sink' user='postgres'"
+        self.conn = pg.connect(conn_string)
+        self.cur = self.conn.cursor()
         self.logger = logging.getLogger()
         self.logger.debug("Initializing the consumer")
         self.topic = 'stats'

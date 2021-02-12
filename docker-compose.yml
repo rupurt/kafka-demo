@@ -1,9 +1,21 @@
-version: '2'
+version: '3'
 services:
+
+  store:
+    image: postgres # use latest official postgres version
+    ports:
+      - "5432:5432"
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - ./database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # another possible (better?) appraoch is to run migration scripts from the app
+
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
+
   kafka:
     image: wurstmeister/kafka
     ports:

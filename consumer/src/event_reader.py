@@ -5,7 +5,17 @@ import json
 import os
 import time
 import psycopg2 as pg
+from sqlalchemy import create_engine
 
+# inject from environment variables
+db_name = 'kafka_sink'
+db_user = 'postgres'
+db_pass = 'secret'
+db_host = 'store'
+db_port = '5432'
+
+# Connect to the database
+db_string = f'postgres://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}'
 
 # topic = os.environ.get('PCDEMO_CHANNEL') or 'stats'
 
@@ -17,9 +27,10 @@ class ConnectionException(Exception):
 class Reader:
 
     def __init__(self):
-        conn_string = "dbname='kafka_sink' user='postgres'"
-        self.conn = pg.connect(conn_string)
-        self.cur = self.conn.cursor()
+        # conn_string = "dbname='kafka_sink' user='postgres'"
+        # self.conn = pg.connect(conn_string)
+        # self.cur = self.conn.cursor()
+        self.db = create_engine(db_string)
         self.logger = logging.getLogger()
         self.logger.debug("Initializing the consumer")
         self.topic = 'stats'
@@ -30,7 +41,7 @@ class Reader:
                                               consumer_timeout_ms=10,
                                               auto_offset_reset='earliest',
                                               group_id='test_consumer_group',
-                                              value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+                                              value_deserializer=lambda x: x.decode('utf-8'))
             except NoBrokersAvailable as err:
                 self.logger.error(f"Unable to find a broker: {err}")
                 time.sleep(1)
@@ -58,6 +69,8 @@ class Reader:
             for message in self.consumer:
                 #if message is None or not message.value:
                 #    continue
+                self.db.execute(f"INSERT INTO coingecko(event) VALUES ('{message.value}');")
+                self.logger.debug(f"TABLE COUNT: {list(self.db.execute('SELECT COUNT(*) FROM coingecko;'))}")
                 self.logger.debug(message.value)
 
     # try:

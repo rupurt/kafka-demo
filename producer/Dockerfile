@@ -1,6 +1,6 @@
+# Use Alpine to reduce image size and build time
 FROM python:3-alpine
 MAINTAINER Peter Cornelius <peter@grabango.com>
-# Based on https://github.com/jazzdd86/alpine-flask
 
 # Install base components
 # RUN apk add --no-cache python3
@@ -11,10 +11,9 @@ RUN mkdir ${APP_DIR}
 VOLUME ${APP_DIR}
 WORKDIR ${APP_DIR}
 
-# Install requirements early so we can change code and re-build quickly
+# when modifying requirements be sure to rebuild the individual service (buggy docker-compose crap)!!
 COPY requirements.txt .
 
-# when modifying requirements be sure to rebuild the individual service (buggy docker-compose crap)!!
 RUN pip3 install --upgrade pip && \
     pip3 install -r requirements.txt
 

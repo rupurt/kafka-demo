@@ -2,7 +2,7 @@ version: '3'
 services:
 
   store:
-    image: postgres # use latest official postgres version
+    image: timescale/timescaledb:latest-pg12 # use latest official postgres version
     ports:
       - "5432:5432"
     env_file:

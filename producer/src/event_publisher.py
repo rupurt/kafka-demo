@@ -5,6 +5,7 @@ import os
 import time
 import logging
 import requests
+# to test I can use a test topic and call producer.send
 
 #ideas: make a transform method that parses the response into a standardized format to be pushed to the topic
 # for both endpoints I need to first get the coin id's from the tickers (both have a list of coins)

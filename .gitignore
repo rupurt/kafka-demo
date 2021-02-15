@@ -1,4 +1,7 @@
 .idea
 *.pyc
 database.env
+metabase.env
+producer.env
 ./database-data
+

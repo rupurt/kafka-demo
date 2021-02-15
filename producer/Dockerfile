@@ -1,5 +1,5 @@
 # Use Alpine to reduce image size and build time
-FROM python:3-alpine
+FROM python:3.7
 MAINTAINER Peter Cornelius <peter@grabango.com>
 
 # Install base components

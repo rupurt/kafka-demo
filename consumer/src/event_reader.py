@@ -17,8 +17,6 @@ db_port = '5432'
 # Connect to the database
 db_string = f'postgres://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}'
 
-# topic = os.environ.get('PCDEMO_CHANNEL') or 'stats'
-
 
 class ConnectionException(Exception):
     pass
@@ -26,14 +24,14 @@ class ConnectionException(Exception):
 
 class Reader:
 
-    def __init__(self):
+    def __init__(self, topic):
         # conn_string = "dbname='kafka_sink' user='postgres'"
         # self.conn = pg.connect(conn_string)
         # self.cur = self.conn.cursor()
         self.db = create_engine(db_string)
         self.logger = logging.getLogger()
         self.logger.debug("Initializing the consumer")
-        self.topic = 'stats'
+        self.topic = topic
         while not hasattr(self, 'consumer'):
             self.logger.debug("Getting the kafka consumer")
             try:

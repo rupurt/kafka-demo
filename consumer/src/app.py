@@ -4,7 +4,7 @@ import logging
 import json
 
 # app = Flask(__name__)
-reader = Reader()
+reader = Reader(topic='stats')
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)

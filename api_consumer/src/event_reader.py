@@ -30,9 +30,6 @@ class Reader:
         :param target_table:
         :param value_deserializer:
         """
-        # conn_string = "dbname='kafka_sink' user='postgres'"
-        # self.conn = pg.connect(conn_string)
-        # self.cur = self.conn.cursor()
         self.db = create_engine(db_string)
         self.logger = logging.getLogger()
         self.logger.debug("Initializing the consumer")

@@ -24,16 +24,20 @@ publisher = Publisher()
 
 
 class APIHook:
-
+    """
+    Abstracts the API call
+    """
     def __init__(self, topic):
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)
         self.logger = logger
         self.topic = topic
 
-    # this can be part of a FETCH_FROM_API class, i.e. separate API stuff from publisher
-    # make aprams an argument
     def get_prices(self):
+        """
+
+        :return:
+        """
         params = {
             'ids': base,
             'vs_currencies': vs

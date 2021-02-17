@@ -1,7 +1,5 @@
 FROM python:3.7
 MAINTAINER Peter Cornelius <peter@grabango.com>
-# Based on https://github.com/jazzdd86/alpine-flask
-
 
 # Dir setup
 ENV APP_DIR /app
@@ -13,9 +11,6 @@ WORKDIR ${APP_DIR}
 COPY requirements.txt .
 RUN pip3 install --upgrade pip && \
     pip3 install -r requirements.txt
-
-# expose http port
-# EXPOSE 80
 
 # copy config files into filesystem
 COPY src .

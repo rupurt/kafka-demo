@@ -7,7 +7,9 @@ import logging
 
 
 class Publisher:
-
+    """
+    Abstracts a kafka producer
+    """
     def __init__(self):
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)
@@ -21,7 +23,13 @@ class Publisher:
                 time.sleep(1)
 
     # this is a good standalone method
-    def push(self, message, topic):
+    def push(self, message: str, topic: str):
+        """
+
+        :param message:
+        :param topic:
+        :return:
+        """
         self.logger.info(f"Publishing: {message}")
         try:
             if self.producer:

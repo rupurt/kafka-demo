@@ -3,6 +3,8 @@ import requests
 import json
 import os
 
+# I can use this to test and instantiate a Producer
+
 producer_host = os.environ.get('PCDEMO_PHOST') or 'localhost'
 producer_port = os.environ.get('PCDEMO_PPORT') or 8282
 consumer_host = os.environ.get('PCDEMO_PHOST') or 'localhost'

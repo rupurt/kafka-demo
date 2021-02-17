@@ -4,8 +4,7 @@ import logging
 import json
 
 # app = Flask(__name__)
-# api_reader = Reader(topic='api-feed', target_table='api_price', value_deserializer=lambda x: x.decode('utf-8'))
-contract_reader = Reader(topic='contracts', target_table='contract_price')
+api_reader = Reader(topic='apis', target_table='api_price', value_deserializer=lambda x: x.decode('utf-8'))
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -30,6 +29,6 @@ if __name__ == '__main__':
     # for message in consumer:
     #     print(message)
     while True:
-        contract_reader.run()
-        # api_reader.run()
+        # contract_reader.run()
+        api_reader.run()
     # app.run(host='0.0.0.0', port=80, debug=True)

@@ -22,25 +22,31 @@ services:
       - "9092:9092"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_CREATE_TOPICS: "stats:1:1"
+      KAFKA_CREATE_TOPICS: "contracts:1:1, apis:1:1"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
   producer:
-    # image: peterc/kafka-flask-producer-example:latest
     build:
       context: ./producer
-    ports:
-      - "8282:80"
     env_file:
-      - producer.env # configure postgres
+      - producer.env
+
+  api_producer:
+    build:
+      context: ./api_producer
 
   consumer:
-    # image: peterc/kafka-flask-consumer-example:latest
     build:
       context: ./consumer
-    ports:
-      - "8283:80"
+    env_file:
+      - contract_consumer.env
+
+  api_consumer:
+    build:
+      context: ./api_consumer
+    env_file:
+      - api_consumer.env
 
 # too bad min refresh interval is 1 min, not suitable for real-time
 #  metabase:

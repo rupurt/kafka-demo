@@ -41,15 +41,25 @@ services:
 
   consumer:
     build:
-      context: ./consumer
+      context: .
+      dockerfile: ./consumer/Dockerfile
     env_file:
-      - contract_consumer.env
+      - consumer.env
 
   api_consumer:
     build:
-      context: ./api_consumer
+      context: .
+      dockerfile: ./api_consumer/Dockerfile
     env_file:
       - api_consumer.env
+
+#  admin:
+#    image: adminer
+#    restart: always
+#    depends_on:
+#      - store
+#    ports:
+#      - 8080:8080
 
 # too bad min refresh interval is 1 min, not suitable for real-time
 #  metabase:

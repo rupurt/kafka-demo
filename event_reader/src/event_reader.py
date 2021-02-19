@@ -7,6 +7,7 @@ import time
 import psycopg2 as pg
 from sqlalchemy import create_engine
 
+# TODO:  create tables in the Reader constructor instead of the init.sql script
 db_name = os.getenv('DB_NAME', 'ENV VARIABLE DB_NAME NOT FOUND!')
 db_user = os.getenv('DB_USER', 'ENV VARIABLE DB_USER NOT FOUND!')
 db_pass = os.getenv('DB_PASSWORD', 'ENV VARIABLE DB_PASSWORD NOT FOUND!')
@@ -23,13 +24,14 @@ class ConnectionException(Exception):
 
 class Reader:
 
-    def __init__(self, topic, target_table, value_deserializer=lambda x: json.loads(x.decode('utf-8'))):
+    def __init__(self, topic: str, target_table: str, value_deserializer=lambda x: json.loads(x.decode('utf-8'))):
         """
-
+        Kafka consumer abstraction
         :param topic:
-        :param target_table:
+        :param target_table: table to be created and populated in the DB
         :param value_deserializer:
         """
+
         self.db = create_engine(db_string)
         self.logger = logging.getLogger()
         self.logger.debug("Initializing the consumer")
@@ -45,8 +47,6 @@ class Reader:
                                               auto_offset_reset='earliest',
                                               group_id='test_consumer_group',
                                               value_deserializer=self.value_deserializer
-                                              # value_deserializer=lambda x: x.decode('utf-8')  # this works for coingecko
-                                              # value_deserializer=lambda x: json.loads(x.decode('utf-8'))
                                               )
             except NoBrokersAvailable as err:
                 self.logger.error(f"Unable to find a broker: {err}")
@@ -64,16 +64,13 @@ class Reader:
 
     def run(self):
         """
-
+        Process messages from broker
         :return:
         """
         # self.logger.debug(f"Reading stream: {self.topic}")
-
         if self.consumer:
             for message in self.consumer:
-                #if message is None or not message.value:
-                #    continue
-                # generalize output table as well
                 self.db.execute(f"INSERT INTO {self.target_table}(event) VALUES ('{message.value}');")
                 self.logger.debug(f"TABLE COUNT: {list(self.db.execute(f'SELECT COUNT(*) FROM {self.target_table};'))}")
                 self.logger.debug(message.value)
+

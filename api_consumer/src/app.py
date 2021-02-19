@@ -1,4 +1,3 @@
-from kafka import KafkaConsumer, TopicPartition
 from event_reader import Reader, ConnectionException
 import logging
 import json

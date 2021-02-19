@@ -28,13 +28,16 @@ services:
 
   producer:
     build:
-      context: ./producer
+      context: .
+      dockerfile: ./producer/Dockerfile
+
     env_file:
       - producer.env
 
   api_producer:
     build:
-      context: ./api_producer
+      context: .
+      dockerfile: ./api_producer/Dockerfile
 
   consumer:
     build:

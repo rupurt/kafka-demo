@@ -6,12 +6,13 @@ MAINTAINER Peter Cornelius <peter@grabango.com>
 
 # Dir setup
 ENV APP_DIR /app
+# this is not necessary as WROKDIR creates it automatically
 RUN mkdir ${APP_DIR}
 VOLUME ${APP_DIR}
 WORKDIR ${APP_DIR}
 
 # when modifying requirements be sure to rebuild the individual service (buggy docker-compose crap)!!
-COPY ./api_producer/requirements.txt .
+COPY requirements.txt .
 
 RUN pip3 install --upgrade pip && \
     pip3 install -r requirements.txt
@@ -19,9 +20,8 @@ RUN pip3 install --upgrade pip && \
 # expose http port
 # EXPOSE 80
 
-# copy files into filesystem
-COPY ./api_producer/src .
-COPY ./event_publisher/src .
+# copy config files into filesystem
+COPY src .
 
 # execute start up script
 ENTRYPOINT ["python3", "app.py"]

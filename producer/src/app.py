@@ -1,6 +1,5 @@
 from contract_reader import ContractHook
 import time
-from event_publisher import Publisher
 import logging
 import json
 

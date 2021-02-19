@@ -33,7 +33,7 @@ docker exec -it kafka-demo_store_1 psql -U postgres -a kafka_sink -c "SELECT * F
 ```
 
 ```bash
-docker exec -it kafka-demo_store_1 psql -U postgres -a kafka_sink -c "SELECT * FROM contract_price;"
+docker exec -it kafka-demo_store_1 psql -U postgres -a kafka_sink -c "SELECT * FROM api_price;"
 ```
 
 #### Scripted Testing ####

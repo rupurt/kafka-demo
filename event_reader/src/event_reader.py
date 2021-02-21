@@ -7,6 +7,7 @@ import time
 import psycopg2 as pg
 from sqlalchemy import create_engine
 
+# TODO:  create tables in the Reader constructor instead of the init.sql script
 db_name = os.getenv('DB_NAME', 'ENV VARIABLE DB_NAME NOT FOUND!')
 db_user = os.getenv('DB_USER', 'ENV VARIABLE DB_USER NOT FOUND!')
 db_pass = os.getenv('DB_PASSWORD', 'ENV VARIABLE DB_PASSWORD NOT FOUND!')
@@ -23,13 +24,14 @@ class ConnectionException(Exception):
 
 class Reader:
 
-    def __init__(self, topic, target_table, value_deserializer=lambda x: json.loads(x.decode('utf-8'))):
+    def __init__(self, topic: str, target_table: str, value_deserializer=lambda x: json.loads(x.decode('utf-8'))):
         """
-
+        Kafka consumer abstraction
         :param topic:
-        :param target_table:
+        :param target_table: table to be created and populated in the DB
         :param value_deserializer:
         """
+
         self.db = create_engine(db_string)
         self.logger = logging.getLogger()
         self.logger.debug("Initializing the consumer")
@@ -45,8 +47,6 @@ class Reader:
                                               auto_offset_reset='earliest',
                                               group_id='test_consumer_group',
                                               value_deserializer=self.value_deserializer
-                                              # value_deserializer=lambda x: x.decode('utf-8')  # this works for coingecko
-                                              # value_deserializer=lambda x: json.loads(x.decode('utf-8'))
                                               )
             except NoBrokersAvailable as err:
                 self.logger.error(f"Unable to find a broker: {err}")
@@ -64,43 +64,13 @@ class Reader:
 
     def run(self):
         """
-        Get the "next" event.  This is a pretty naive implementation.  It
-        doesn't try to deal with multiple partitions or anything and it assumes
-        the event payload is json.
-        :return: The event in json form
+        Process messages from broker
+        :return:
         """
         # self.logger.debug(f"Reading stream: {self.topic}")
-
         if self.consumer:
             for message in self.consumer:
-                #if message is None or not message.value:
-                #    continue
-                # generalize output table as well
                 self.db.execute(f"INSERT INTO {self.target_table}(event) VALUES ('{message.value}');")
                 self.logger.debug(f"TABLE COUNT: {list(self.db.execute(f'SELECT COUNT(*) FROM {self.target_table};'))}")
                 self.logger.debug(message.value)
 
-    # try:
-    #     if self.consumer:
-    #         self.logger.debug("A consumer is calling 'next'")
-    #         try:
-    #             # This would be cleaner using `next(consumer)` except
-    #             # that there is no timeout on that call.
-    #             event_partitions = self.consumer.poll(timeout_ms=100,
-    #                                                   max_records=1)
-    #             event_list = list(event_partitions.values())
-    #             payload = event_list[0][0]
-    #             event = payload.value
-    #             self.logger.info(f'Read an event from the stream {event} of type({event})')
-    #             try:
-    #                 return json.loads(event)
-    #             except json.decoder.JSONDecodeError:
-    #                 return json.loads(f'{{ "message": "{event}" }}')
-    #         except (StopIteration, IndexError):
-    #             return None
-    #     raise ConnectionException
-    # except AttributeError as ae:
-    #     self.logger.error("Unable to retrieve the next message.  "
-    #                       "There is no consumer to read from.")
-    #     self.logger.error(str(ae))
-    #     raise ConnectionException

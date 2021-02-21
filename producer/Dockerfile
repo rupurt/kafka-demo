@@ -11,7 +11,7 @@ VOLUME ${APP_DIR}
 WORKDIR ${APP_DIR}
 
 # when modifying requirements be sure to rebuild the individual service (buggy docker-compose crap)!!
-COPY requirements.txt .
+COPY ./producer/requirements.txt .
 
 RUN pip3 install --upgrade pip && \
     pip3 install -r requirements.txt
@@ -19,8 +19,10 @@ RUN pip3 install --upgrade pip && \
 # expose http port
 # EXPOSE 80
 
-# copy config files into filesystem
-COPY src .
+# copy files into filesystem
+COPY config.ini .
+COPY ./producer/src .
+COPY ./event_publisher/src .
 
 # execute start up script
 ENTRYPOINT ["python3", "app.py"]

@@ -8,12 +8,13 @@ VOLUME ${APP_DIR}
 WORKDIR ${APP_DIR}
 
 # Install requirements early so we can change code and re-build quickly
-COPY requirements.txt .
+COPY ./consumer/requirements.txt .
 RUN pip3 install --upgrade pip && \
     pip3 install -r requirements.txt
 
 # copy config files into filesystem
-COPY src .
+COPY ./consumer/src .
+COPY ./event_reader/src .
 
 # execute start up script
 # I need a bash file to initialize the db (postgres?)

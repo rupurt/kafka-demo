@@ -1,17 +1,15 @@
-from kafka import KafkaConsumer, TopicPartition
 from event_reader import Reader, ConnectionException
 import logging
 import json
 import time
 import socket
 
-# app = Flask(__name__)
-api_reader = Reader(topic='apis', target_table='api_price', value_deserializer=lambda x: x.decode('utf-8'))
-
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 if len(logger.handlers) == 0:
     logger.addHandler(logging.StreamHandler())
+
+api_reader = Reader(topic='apis', target_table='api_price', value_deserializer=lambda x: x.decode('utf-8'))
 
 
 if __name__ == '__main__':

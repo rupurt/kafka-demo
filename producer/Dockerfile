@@ -20,6 +20,7 @@ RUN pip3 install --upgrade pip && \
 # EXPOSE 80
 
 # copy files into filesystem
+COPY config.ini .
 COPY ./producer/src .
 COPY ./event_publisher/src .
 

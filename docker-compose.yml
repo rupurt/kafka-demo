@@ -53,13 +53,13 @@ services:
     env_file:
       - api_consumer.env
 
-#  admin:
-#    image: adminer
-#    restart: always
-#    depends_on:
-#      - store
-#    ports:
-#      - 8080:8080
+  admin:
+    image: adminer
+    restart: always
+    depends_on:
+      - store
+    ports:
+      - 8080:8080
 
 # too bad min refresh interval is 1 min, not suitable for real-time
 #  metabase:

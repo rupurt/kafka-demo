@@ -4,5 +4,5 @@ database.env
 metabase.env
 producer.env
 consumer.env
-./database-data
+/database-data
 

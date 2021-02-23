@@ -6,5 +6,7 @@ database.env
 metabase.env
 producer.env
 consumer.env
-./database-data
+api_consumer.env
+queries.sql
+/database-data
 

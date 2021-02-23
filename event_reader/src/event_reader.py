@@ -7,6 +7,135 @@ import time
 import psycopg2 as pg
 from sqlalchemy import create_engine
 
+LINK_QUERY = """
+SELECT  ABS(ROUND((1. - (x.price*2./(y.price + z.price)))*100, 3)) || ' ' ||'%%' as deviation
+FROM(
+
+WITH tmp as
+(
+SELECT (event -> 'args' ->> 'current') ::numeric as contract_price,
+event -> 'args' ->> 'roundId' as round_id,
+event ->> 'transactionIndex' as trans_index,
+event -> 'args' ->> 'updatedAt' as updated_at,
+event ->> 'blockNumber' as block_number
+FROM contract_price
+WHERE event ->> 'event_type' = 'link-usd' AND event ->> 'blockNumber' =
+(
+select max(event ->> 'blockNumber') as max_block_number
+FROM contract_price WHERE event ->> 'event_type' = 'link-usd'
+)
+)
+SELECT contract_price/100000000. as price FROM tmp
+WHERE tmp.trans_index =
+(
+select max(trans_index) as max_trans_index
+FROM tmp
+)
+) x
+
+JOIN
+(SELECT (event -> 'chainlink' ->> 'usd')::numeric as price
+FROM api_price WHERE event ->> 'event_type' = 'cg' order by updated_at desc limit 1
+) y
+
+ON 1=1
+
+JOIN(
+SELECT (event ->> 'close')::numeric as price  
+FROM api_price WHERE event ->> 'event_type' = 'cp-link-usd' 
+order by updated_at desc limit 1
+) z
+
+ON 1=1
+"""
+
+
+ETH_QUERY = """
+SELECT  ABS(ROUND((1. - (x.price*2./(y.price + z.price)))*100, 3)) || ' ' ||'%%' as deviation
+FROM(
+
+WITH tmp as
+(
+SELECT (event -> 'args' ->> 'current') ::numeric as contract_price,
+event -> 'args' ->> 'roundId' as round_id,
+event ->> 'transactionIndex' as trans_index,
+event -> 'args' ->> 'updatedAt' as updated_at,
+event ->> 'blockNumber' as block_number
+FROM contract_price
+WHERE event ->> 'event_type' = 'eth-usd' AND event ->> 'blockNumber' =
+(
+select max(event ->> 'blockNumber') as max_block_number
+FROM contract_price WHERE event ->> 'event_type' = 'eth-usd'
+)
+)
+SELECT contract_price/100000000. as price FROM tmp
+WHERE tmp.trans_index =
+(
+select max(trans_index) as max_trans_index
+FROM tmp
+)
+) x
+
+JOIN
+(SELECT (event -> 'ethereum' ->> 'usd')::numeric as price
+FROM api_price WHERE event ->> 'event_type' = 'cg' order by updated_at desc limit 1
+) y
+
+ON 1=1
+
+JOIN(
+SELECT (event ->> 'close')::numeric as price  
+FROM api_price WHERE event ->> 'event_type' = 'cp-eth-usd' 
+order by updated_at desc limit 1
+) z
+
+ON 1=1
+"""
+
+BTC_QUERY = """
+SELECT  ABS(ROUND((1. - (x.price*2./(y.price + z.price)))*100, 3)) || ' ' ||'%%' as deviation
+FROM(
+
+WITH tmp as
+(
+SELECT (event -> 'args' ->> 'current') ::numeric as contract_price,
+event -> 'args' ->> 'roundId' as round_id,
+event ->> 'transactionIndex' as trans_index,
+event -> 'args' ->> 'updatedAt' as updated_at,
+event ->> 'blockNumber' as block_number
+FROM contract_price
+WHERE event ->> 'event_type' = 'btc-usd' AND event ->> 'blockNumber' =
+(
+select max(event ->> 'blockNumber') as max_block_number
+FROM contract_price WHERE event ->> 'event_type' = 'btc-usd'
+)
+)
+SELECT contract_price/100000000. as price FROM tmp
+WHERE tmp.trans_index =
+(
+select max(trans_index) as max_trans_index
+FROM tmp
+)
+) x
+
+JOIN
+(SELECT (event -> 'bitcoin' ->> 'usd')::numeric as price
+FROM api_price WHERE event ->> 'event_type' = 'cg' order by updated_at desc limit 1
+) y
+
+ON 1=1
+
+JOIN(
+SELECT (event ->> 'close')::numeric as price  
+FROM api_price WHERE event ->> 'event_type' = 'cp-btc-usd' 
+order by updated_at desc limit 1
+) z
+
+ON 1=1
+"""
+
+
+
 # TODO:  create tables in the Reader constructor instead of the init.sql script
 db_name = os.getenv('DB_NAME', 'ENV VARIABLE DB_NAME NOT FOUND!')
 db_user = os.getenv('DB_USER', 'ENV VARIABLE DB_USER NOT FOUND!')
@@ -71,6 +200,9 @@ class Reader:
         if self.consumer:
             for message in self.consumer:
                 self.db.execute(f"INSERT INTO {self.target_table}(event) VALUES ('{message.value}');")
-                self.logger.debug(f"TABLE COUNT: {list(self.db.execute(f'SELECT COUNT(*) FROM {self.target_table};'))}")
-                self.logger.debug(message.value)
+                self.logger.debug(f"LINK: {list(self.db.execute(LINK_QUERY))[0]}")
+                self.logger.debug(f"ETH: {list(self.db.execute(ETH_QUERY))[0]}")
+                self.logger.debug(f"BTC: {list(self.db.execute(BTC_QUERY))[0]}")
+
+                # self.logger.debug(message.value)
 

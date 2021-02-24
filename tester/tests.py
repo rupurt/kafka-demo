@@ -2,17 +2,16 @@ import unittest
 import requests
 import json
 import os
+#from event_publisher import Publisher
+#from event_reader import Reader, ConnectionException
+
+#reader = Reader(topic='test', target_table='test')
 
 # I can use this to test and instantiate a Producer
 
-producer_host = os.environ.get('PCDEMO_PHOST') or 'localhost'
-producer_port = os.environ.get('PCDEMO_PPORT') or 8282
-consumer_host = os.environ.get('PCDEMO_PHOST') or 'localhost'
-consumer_port = os.environ.get('PCDEMO_PPORT') or 8283
+#publisher = Publisher()
 
-producer_url = "http://{0}:{1}/events".format(producer_host, producer_port)
-consumer_url = "http://{0}:{1}/events".format(consumer_host, consumer_port)
-
+#publisher.push(test_msg, 'test')
 
 # These aren't really unit tests but the unittest package seems like a
 # convenient way to run integration tests, too
@@ -29,7 +28,7 @@ class TestProducerConsumer(unittest.TestCase):
     # Just checks that we even have a connection.
     def test_post_an_event(self):
         event = {'name': 'test', 'payload': 'rock and also roll'}
-        response = self.send_event(event);
+        response = self.send_event(event)
         self.assertTrue(response.ok)
         self.assertTrue(response.json(), '{"status": "success"}')
 

@@ -1,27 +1,47 @@
 ## Kafka Demo ##
  
-This repo was written as part of a job interview and isn't necessarily a good
+Near real-time data pipeline that evaluates the accuracy of price feed contracts with respect to two free cryptocurrency APIs,
+Coingecko and Coinpaprika, for 3 pairs: ETH-USD, LINK-USD and BTC-USD. The metric used for the accuracy is the percentage difference between the 
+values returned by the contracts and the average value returned by the APIs.
+
+N.B.: This repo was written as part of a job interview and isn't necessarily a good
 example of a production Kafka use case.  
 
 * `docker-compose.yml`
-  * This is the base composition.  It should allow you to bring up the stack 
-  with just `docker-compose up`
-* `docker-compose.dev.yml`
-  * To be written
+  * This is the base composition.  It allows you to bring up the stack 
+  with just `docker-compose up`. Please be patient as downloading images will take a while. 
+    Don't forget to run `docker-compose down` when finished! 
+
+#### Services ####
+
+* kafka
+  * Basic Kafka setup: 1 broker, 2 topics with one partition each and replication factor of 1 (due to there being only one broker). This setup is not suitable for a production environment.
+* zookeeper
+  * Kafka configuration manager. Single instance.
+* api_producer
+  * The source and `Dockerfile` for the producer application.
 * producer
   * The source and `Dockerfile` for the producer application.
+* api_consumer
+  * Same thing but for the consumer
 * consumer
   * Same thing but for the consumer
+* store
+  * Persistent layer: TimescaleDB (Postgresql extension). Time-series DB designed to support high insert rates and fast time-based queries. 
+
+* admin
+  * Adminer: Light-weight UI-based database management tool that can be used to quickly visualize the tables and run analytics queries.
+  
 * tester  
   * Integration tests -  to be done
   
-### Dependencies ###
-Mention docker version etc..
+### Requirements ###
+Docker-compose. Version used for this project: 1.24.0. Should work with other versions as well.
 
 ### Example Usage ###
 
 
-#### Manual Testing ####
+#### Testing ####
 Run
 ```bash
 docker-compose up
@@ -35,8 +55,6 @@ docker exec -it kafka-demo_store_1 psql -U postgres -a kafka_sink -c "SELECT * F
 ```bash
 docker exec -it kafka-demo_store_1 psql -U postgres -a kafka_sink -c "SELECT * FROM api_price;"
 ```
-
-#### Scripted Testing ####
 
 
 

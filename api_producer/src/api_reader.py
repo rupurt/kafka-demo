@@ -5,8 +5,6 @@ import logging
 import requests
 
 # to test I can use a test topic and call producer.send
-
-# ideas: make a transform method that parses the response into a standardized format to be pushed to the topic
 # TODO: for both endpoints I need to first get the coin id's from the tickers (both have a list of coins)
 # TODO: however this call needs to be made only once and can be cached, so best would be in the class constructor
 # write some tests that mock the API's response
@@ -36,9 +34,9 @@ class APIHook:
     def fetch(self,  base_url: str, params: Dict, event_type: str, timeout=5):
         """
 
-        :param event_type:
-        :param timeout:
-        :param params:
+        :param event_type: metadata to append to the message
+        :param timeout: timeout threshold
+        :param params: get params
         :param base_url:
         :return:
         """
@@ -53,9 +51,9 @@ class APIHook:
     def fetch_custom(self, base_url: str, event_type: str, params: str = '', timeout=5):
         """
 
-        :param event_type:
-        :param timeout:
-        :param params:
+        :param event_type: metadata to append to the message
+        :param timeout: timeout threshold
+        :param params: get params
         :param base_url:
         :return:
         """

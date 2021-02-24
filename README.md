@@ -75,7 +75,7 @@ docker exec -it kafka-demo_store_1 psql -U postgres -a kafka_sink -c "SELECT * F
 ### Querying basics ###
 
 Both target tables store event data in a jsonb column called `event`. You can query by making use of Postgres JSON operators. 
-For example use the following query to get the latest ETH price from the coingecko 'cg' API:
+For example use the following query to get the latest ETH price from the coingecko ('cg') API:
 
 `SELECT (event -> 'ethereum' ->> 'usd')::numeric as price  
 FROM api_price WHERE event ->> 'event_type' = 'cg' order by updated_at desc limit 1`

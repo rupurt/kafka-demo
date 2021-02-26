@@ -7,6 +7,7 @@ import time
 import psycopg2 as pg
 from sqlalchemy import create_engine
 
+# touch to add comments
 LINK_QUERY = """
 SELECT  ABS(ROUND((1. - (x.price*2./(y.price + z.price)))*100, 3)) || ' ' ||'%%' as deviation
 FROM(
@@ -50,6 +51,7 @@ ON 1=1
 """
 
 
+# touch to add comments
 ETH_QUERY = """
 SELECT  ABS(ROUND((1. - (x.price*2./(y.price + z.price)))*100, 3)) || ' ' ||'%%' as deviation
 FROM(
@@ -92,6 +94,7 @@ order by updated_at desc limit 1
 ON 1=1
 """
 
+# touch to add comments
 BTC_QUERY = """
 SELECT  ABS(ROUND((1. - (x.price*2./(y.price + z.price)))*100, 3)) || ' ' ||'%%' as deviation
 FROM(
@@ -200,6 +203,7 @@ class Reader:
         if self.consumer:
             for message in self.consumer:
                 self.db.execute(f"INSERT INTO {self.target_table}(event) VALUES ('{message.value}');")
+                # touch to add comments
                 self.logger.debug(f"LINK: {list(self.db.execute(LINK_QUERY))[0]}")
                 self.logger.debug(f"ETH: {list(self.db.execute(ETH_QUERY))[0]}")
                 self.logger.debug(f"BTC: {list(self.db.execute(BTC_QUERY))[0]}")
